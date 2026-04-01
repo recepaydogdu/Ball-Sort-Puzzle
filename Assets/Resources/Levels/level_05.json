@@ -1,0 +1,13 @@
+{
+  "levelNumber": 5,
+  "levelName": "Usta Seviyesi",
+  "emptyTubeCount": 2,
+  "tubes": [
+    { "balls": [1, 2, 3, 6] },
+    { "balls": [4, 5, 1, 2] },
+    { "balls": [3, 6, 4, 5] },
+    { "balls": [2, 1, 5, 3] },
+    { "balls": [6, 4, 2, 1] },
+    { "balls": [5, 3, 6, 4] }
+  ]
+}

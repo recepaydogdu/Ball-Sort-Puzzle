@@ -1,0 +1,11 @@
+{
+  "levelNumber": 3,
+  "levelName": "Orta Zorluk",
+  "emptyTubeCount": 2,
+  "tubes": [
+    { "balls": [1, 1, 2, 3] },
+    { "balls": [4, 2, 4, 1] },
+    { "balls": [3, 4, 3, 2] },
+    { "balls": [2, 3, 1, 4] }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "levelNumber": 2,
+  "levelName": "Isınma",
+  "emptyTubeCount": 2,
+  "tubes": [
+    { "balls": [1, 2, 3, 4] },
+    { "balls": [4, 3, 2, 1] },
+    { "balls": [3, 1, 4, 2] },
+    { "balls": [2, 4, 1, 3] }
+  ]
+}

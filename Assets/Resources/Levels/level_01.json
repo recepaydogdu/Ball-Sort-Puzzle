@@ -1,0 +1,10 @@
+{
+  "levelNumber": 1,
+  "levelName": "Başlangıç",
+  "emptyTubeCount": 2,
+  "tubes": [
+    { "balls": [1, 3, 2, 1] },
+    { "balls": [3, 2, 1, 3] },
+    { "balls": [2, 3, 1, 2] }
+  ]
+}
