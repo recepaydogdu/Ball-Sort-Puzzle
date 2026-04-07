@@ -20,6 +20,12 @@ namespace BallSort.UI
         private const string TextNewRecord  = "Yeni Rekor!";
         private const string TextNoRecord   = "İlk Tamamlama";
 
+        // ─── Runtime ────────────────────────────────────────────────
+        // Level yüklendiğinde snapshot'lanan en iyi hamle.
+        // HandleLevelSolved, LevelManager güncellemesinden önce veya sonra
+        // tetiklenebileceğinden, karşılaştırmayı bu değer üzerinden yapıyoruz.
+        private int _bestMovesAtLevelStart = -1;
+
         // ─── Inspector — HUD ────────────────────────────────────────
         [Header("HUD")]
         [SerializeField] private TextMeshProUGUI _levelNameText;
@@ -73,6 +79,16 @@ namespace BallSort.UI
             _winRestartButton?.onClick.AddListener(OnRestartClicked);
         }
 
+        private void OnDestroy()
+        {
+            // AddListener ile eklenen referanslar UnityEvent tarafından tutulur.
+            // GameUI yıkılırken butonlar hayatta kalırsa çökme olur; temizle.
+            _undoButton?.onClick.RemoveListener(OnUndoClicked);
+            _restartButton?.onClick.RemoveListener(OnRestartClicked);
+            _nextLevelButton?.onClick.RemoveListener(OnNextLevelClicked);
+            _winRestartButton?.onClick.RemoveListener(OnRestartClicked);
+        }
+
         // ─── Olay İşleyiciler ───────────────────────────────────────
 
         private void HandleLevelLoaded()
@@ -84,6 +100,10 @@ namespace BallSort.UI
             var lm = LevelManager.Instance;
             if (_levelNameText != null)
                 _levelNameText.text = lm?.CurrentLevel?.LevelName ?? string.Empty;
+
+            // LevelManager güncelleme yapmadan ÖNCE en iyi değeri sakla.
+            // HandleLevelSolved'daki "Yeni Rekor" karşılaştırması buna dayanır.
+            _bestMovesAtLevelStart = lm?.GetBestMoves(lm.CurrentIndex) ?? -1;
         }
 
         private void HandleMoveCountChanged(int moves)
@@ -99,20 +119,24 @@ namespace BallSort.UI
             if (_winMovesText != null)
                 _winMovesText.text = string.Format(FormatWinMoves, moves);
 
-            var lm   = LevelManager.Instance;
-            int best = lm?.GetBestMoves(lm.CurrentIndex) ?? -1;
+            // _bestMovesAtLevelStart: level yüklendiğinde snapshot'lanan değer.
+            // LevelManager bu event'te PlayerPrefs'i güncellemiş olabilir;
+            // o yüzden GetBestMoves() yerine snapshot'ı kullanıyoruz.
+            bool isFirstCompletion = _bestMovesAtLevelStart < 0;
+            bool isNewRecord       = !isFirstCompletion && moves < _bestMovesAtLevelStart;
 
             if (_winBestText != null)
             {
-                if (best < 0)
+                if (isFirstCompletion)
                     _winBestText.text = TextNoRecord;
-                else if (best == moves)
+                else if (isNewRecord)
                     _winBestText.text = TextNewRecord;
                 else
-                    _winBestText.text = string.Format(FormatBest, best);
+                    _winBestText.text = string.Format(FormatBest, _bestMovesAtLevelStart);
             }
 
             // Son seviyedeyse "Sonraki" gizle
+            var lm = LevelManager.Instance;
             bool hasNext = lm != null && lm.CurrentIndex + 1 < lm.LevelCount;
             _nextLevelButton?.gameObject.SetActive(hasNext);
         }

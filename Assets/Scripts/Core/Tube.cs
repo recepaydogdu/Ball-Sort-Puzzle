@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using BallSort.Core;
 
 namespace BallSort.Core
@@ -8,9 +9,12 @@ namespace BallSort.Core
     /// Tek bir tüpün sahne temsilcisi (View + Input katmanı).
     /// Oyun mantığı <see cref="TubeData"/>'da tutulur;
     /// orkestrasyon GameManager'da yürütülür.
+    ///
+    /// Kurulum notu: sahneye Physics2DRaycaster bileşenli bir kamera ve
+    /// EventSystem eklenmelidir; aksi hâlde OnPointerClick tetiklenmez.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
-    public class Tube : MonoBehaviour
+    public class Tube : MonoBehaviour, IPointerClickHandler
     {
         // ─── Görsel Sabitler ────────────────────────────────────────
         private static readonly Color DefaultTubeColor   = new Color(0.80f, 0.80f, 0.80f);
@@ -108,6 +112,12 @@ namespace BallSort.Core
 
         // ─── Input ──────────────────────────────────────────────────
 
-        private void OnMouseDown() => OnTubeClicked?.Invoke(this);
+        /// <summary>
+        /// EventSystem üzerinden gelen tıklama/dokunma olayını işler.
+        /// OnMouseDown yerine kullanılır; UI panel arkasında kalan tüpler
+        /// artık yanlışlıkla tıklanmaz (EventSystem bloklaması çalışır).
+        /// </summary>
+        public void OnPointerClick(PointerEventData eventData)
+            => OnTubeClicked?.Invoke(this);
     }
 }

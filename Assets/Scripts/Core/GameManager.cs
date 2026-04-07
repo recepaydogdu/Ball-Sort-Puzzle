@@ -11,7 +11,11 @@ namespace BallSort
     /// Oyun akışının merkezi orkestratörü (Singleton + DontDestroyOnLoad).
     /// Sorumluluklar: seviye kurma, hamle doğrulama, undo yönetimi, kazanma koşulu.
     /// UI ve seviye kataloğu bu sınıfın kapsamı dışındadır.
+    ///
+    /// DefaultExecutionOrder(-10): LevelManager(-5) ve GameUI(0)'dan önce Awake'lenir.
+    /// Bu sayede LevelManager.OnEnable'da Instance garantili bulunur.
     /// </summary>
+    [DefaultExecutionOrder(-10)]
     public class GameManager : MonoBehaviour
     {
         // ─── Singleton ──────────────────────────────────────────────
@@ -64,6 +68,13 @@ namespace BallSort
         {
             if (_startLevel != null)
                 LoadLevel(_startLevel);
+        }
+
+        private void OnDestroy()
+        {
+            // Instance'ı temizle; bir sonraki Singleton yaratılabilsin.
+            if (Instance == this) Instance = null;
+            ClearExistingTubes();
         }
 
         // ─── Seviye Yönetimi ────────────────────────────────────────

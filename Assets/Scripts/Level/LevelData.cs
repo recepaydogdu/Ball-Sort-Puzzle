@@ -54,6 +54,7 @@ namespace BallSort.Level
         /// <summary>
         /// Seviye verisinin tutarlılığını denetler.
         /// Yükleme öncesinde ve Editor'da çağrılır.
+        /// Kontroller: kapasite, null güvenliği, renk dengesi (her renk = DefaultCapacity kez).
         /// </summary>
         public bool Validate(out string error)
         {
@@ -70,6 +71,33 @@ namespace BallSort.Level
                     error = $"Tüp en fazla {TubeData.DefaultCapacity} top alabilir; " +
                             $"girilen: {setup.balls.Length}.";
                     return false;
+                }
+            }
+
+            // Renk dengesi: None kontrolü (hard error) + denge kontrolü (uyarı).
+            // Denge uyarısı false döndürmez; tasarım aşamasında fark edilmesi için loglanır.
+            var colorCount = new System.Collections.Generic.Dictionary<BallColor, int>();
+            foreach (var setup in _tubePlacements)
+            {
+                foreach (var ball in setup.balls)
+                {
+                    if (ball == BallColor.None)
+                    { error = "TubePlacement içinde BallColor.None kullanılamaz."; return false; }
+
+                    colorCount.TryGetValue(ball, out int cnt);
+                    colorCount[ball] = cnt + 1;
+                }
+            }
+
+            foreach (var kv in colorCount)
+            {
+                if (kv.Value != TubeData.DefaultCapacity)
+                {
+                    // Bloklayıcı değil; level yüklenir ama çözümsüz olabilir.
+                    Debug.LogWarning(
+                        $"[LevelData] '{LevelName}' renk dengesi bozuk: " +
+                        $"{kv.Key} → {kv.Value} top (beklenen {TubeData.DefaultCapacity}). " +
+                        "Level çözümsüz olabilir.");
                 }
             }
 

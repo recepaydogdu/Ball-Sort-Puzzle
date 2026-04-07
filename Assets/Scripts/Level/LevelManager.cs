@@ -6,7 +6,11 @@ namespace BallSort.Level
     /// <summary>
     /// Seviye kataloğunu, oyuncu ilerleme kaydını ve seviyeler arası geçişi yönetir.
     /// İlerleme PlayerPrefs üzerinde saklanır; sahne geçişinde veri kaybolmaz.
+    ///
+    /// DefaultExecutionOrder(-5): GameManager(-10)'dan sonra, GameUI(0)'dan önce çalışır.
+    /// OnEnable'da GameManager.Instance garantili bulunur (race condition önlenir).
     /// </summary>
+    [DefaultExecutionOrder(-5)]
     public class LevelManager : MonoBehaviour
     {
         // ─── PlayerPrefs Anahtar Sabitleri ──────────────────────────
@@ -70,6 +74,12 @@ namespace BallSort.Level
         {
             if (BallSort.GameManager.Instance != null)
                 BallSort.GameManager.Instance.OnLevelSolved -= HandleLevelSolved;
+        }
+
+        private void OnDestroy()
+        {
+            // Instance'ı temizle; oyun sonunda veya testlerde yeni Singleton üretilebilsin.
+            if (Instance == this) Instance = null;
         }
 
         // ─── Katalog Başlatma ────────────────────────────────────────
