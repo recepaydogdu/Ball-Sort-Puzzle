@@ -3,7 +3,8 @@
     "rootNamespace": "BallSort.Tests.EditMode",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "BallSort"
     ],
     "includePlatforms": [ "Editor" ],
     "excludePlatforms": [],

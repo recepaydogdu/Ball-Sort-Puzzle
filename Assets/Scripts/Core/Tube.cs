@@ -58,6 +58,9 @@ namespace BallSort.Core
         /// <summary>Bu tüpün TubeData referansını döner.</summary>
         public TubeData GetData() => _data;
 
+        /// <summary>Bu tüp boş mu? TubeData.IsEmpty()'e delege eder.</summary>
+        public bool IsEmpty() => _data?.IsEmpty() ?? true;
+
         /// <summary>Bu tüp çözüldü mü? TubeData.IsSolved()'a delege eder.</summary>
         public bool IsSolved() => _data?.IsSolved() ?? false;
 

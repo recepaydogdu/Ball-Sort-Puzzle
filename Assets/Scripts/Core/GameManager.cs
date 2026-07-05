@@ -203,8 +203,9 @@ namespace BallSort
         /// from → to hamlesini dener.
         /// Kural ihlalinde tüpler değişmeden false döner.
         /// </summary>
-        public bool TryMove(int fromIndex, int toIndex)
+        public bool TryMove(int from, int to)
         {
+            int fromIndex = from, toIndex = to;
             if (!IsValidIndex(fromIndex) || !IsValidIndex(toIndex)) return false;
 
             var fromData = _tubes[fromIndex].GetData();

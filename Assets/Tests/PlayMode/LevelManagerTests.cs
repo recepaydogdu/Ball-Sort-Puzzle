@@ -3,6 +3,7 @@ using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using BallSort.Level;
+using Object = UnityEngine.Object;
 
 namespace BallSort.Tests.PlayMode
 {
